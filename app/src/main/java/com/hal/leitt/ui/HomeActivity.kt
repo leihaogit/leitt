@@ -132,7 +132,7 @@ class HomeActivity : AppCompatActivity() {
                 SettingsActivity.start(this)
             } else {
                 Toast.makeText(
-                    context, resources.getString(R.string.acc_unbind), Toast.LENGTH_SHORT
+                    context, resources.getString(R.string.pls_bind_acc), Toast.LENGTH_SHORT
                 ).show()
             }
             true

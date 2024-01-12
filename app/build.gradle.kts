@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation("com.belerweb:pinyin4j:2.5.1")
     implementation("androidx.activity:activity-ktx:1.7.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("com.tencent:mmkv:1.2.13")

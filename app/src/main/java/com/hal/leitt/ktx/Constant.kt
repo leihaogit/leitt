@@ -9,10 +9,6 @@ package com.hal.leitt.ktx
  */
 
 object Constant {
-
-    //服务是否还正常执行
-    const val IS_ACC_RUNNING = "is_acc_running"
-
     //基础跳广告功能是否开启
     const val IS_FUNCTION_ON = "is_function_on"
 

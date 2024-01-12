@@ -34,7 +34,7 @@
         <Preference
             app:icon="@drawable/baseline_sentiment_satisfied_alt_24"
             app:key="whitelist"
-            app:summary="决定单个应用是否检测广告"
+            app:summary="白名单中的应用不会被检测广告"
             app:title="应用白名单" />
 
     </PreferenceCategory>

@@ -37,9 +37,6 @@
         </service>
 
         <activity
-            android:name=".ui.AppConfigActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.HomeActivity"
             android:exported="true">
             <intent-filter>
@@ -48,6 +45,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".receiver.UserPresentReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="90000">
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".receiver.PackageChangeReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="90000">
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

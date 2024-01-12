@@ -10,5 +10,9 @@
     <string name="arrow"><![CDATA[>>]]></string>
     <string name="already_setting"> OK </string>
     <string name="settings">偏好设置</string>
-    <string name="acc_unbind">请先启动服务再进行设置~</string>
+    <string name="pls_bind_acc">请先启动无障碍服务</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="loading_app_list">正在加载应用列表…</string>
+
 </resources>

@@ -2,11 +2,8 @@ package com.hal.leitt.service
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
-import android.util.Log
 import android.view.accessibility.AccessibilityEvent
-import android.widget.Toast
-import com.hal.leitt.ktx.Constant
-import com.tencent.mmkv.MMKV
+import com.hal.leitt.ktx.Settings
 import java.lang.ref.WeakReference
 
 
@@ -20,12 +17,25 @@ import java.lang.ref.WeakReference
 class TouchHelperService : AccessibilityService() {
 
     companion object {
+        //关键字刷新
         const val ACTION_REFRESH_KEYWORDS = 1
+
+        //包列表刷新
         const val ACTION_REFRESH_PACKAGE = 2
+
+        //
         const val ACTION_REFRESH_CUSTOMIZED_ACTIVITY = 3
+
+        //控件采集
         const val ACTION_ACTIVITY_CUSTOMIZATION = 4
+
+        //终止服务
         const val ACTION_STOP_SERVICE = 5
+
+        //跳广告功能开启
         const val ACTION_START_SKIP_AD = 6
+
+        //跳广告功能关闭
         const val ACTION_STOP_SKIP_AD = 7
 
         private var mService: WeakReference<TouchHelperService>? = null
@@ -55,13 +65,12 @@ class TouchHelperService : AccessibilityService() {
             serviceImpl = TouchHelperServiceImpl(this)
         }
         serviceImpl?.onServiceConnected()
-        MMKV.defaultMMKV().encode(Constant.IS_FUNCTION_ON, true)
-        MMKV.defaultMMKV().encode(Constant.IS_ACC_RUNNING, true)
+        Settings.setFunctionOn(true)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         //判断跳广告功能是否开启
-        if (MMKV.defaultMMKV().decodeBool(Constant.IS_FUNCTION_ON)) {
+        if (Settings.isFunctionOn()) {
             serviceImpl?.onAccessibilityEvent(event)
         }
     }
@@ -73,8 +82,7 @@ class TouchHelperService : AccessibilityService() {
         serviceImpl?.onUnbind()
         serviceImpl = null
         mService = null
-        MMKV.defaultMMKV().encode(Constant.IS_FUNCTION_ON, false)
-        MMKV.defaultMMKV().encode(Constant.IS_ACC_RUNNING, false)
+        Settings.setFunctionOn(false)
         return super.onUnbind(intent)
     }
 
