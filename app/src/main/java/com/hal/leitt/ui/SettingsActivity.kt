@@ -14,7 +14,7 @@ import com.hal.leitt.ui.fragment.SettingsFragment
  * ...
  * @author LeiHao
  * @date 2024/1/12
- * @description 设置界面
+ * @description 设置页
  */
 
 class SettingsActivity : AppCompatActivity() {
