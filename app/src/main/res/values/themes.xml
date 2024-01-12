@@ -1,0 +1,10 @@
+<resources>
+
+    <style name="Base.Theme.LeiTT" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">@color/custom_color</item>
+        <item name="colorPrimary">@color/custom_color</item>
+    </style>
+
+    <style name="Theme.LeiTT" parent="Base.Theme.LeiTT" />
+</resources>

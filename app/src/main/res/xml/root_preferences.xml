@@ -1,0 +1,60 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="功能开关">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:icon="@drawable/baseline_power_settings_new_24"
+            app:key="function"
+            app:summaryOff="功能已关闭"
+            app:summaryOn="功能已开启"
+            app:title="自动跳过广告" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="基础设置">
+
+        <SeekBarPreference
+            android:max="10"
+            app:defaultValue="4"
+            app:icon="@drawable/baseline_access_time_24"
+            app:key="skip_ad_duration"
+            app:min="1"
+            app:showSeekBarValue="true"
+            app:summary="目标应用启动后的检测时间，设置过短广告可能未加载完，导致跳过失败"
+            app:title="检测时长 (推荐值：4秒)" />
+
+        <EditTextPreference
+            app:dialogTitle="多个关键字请以空格分隔"
+            app:icon="@drawable/baseline_add_circle_outline_24"
+            app:key="setting_key_words"
+            app:title="添加按钮检测关键字"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            app:icon="@drawable/baseline_sentiment_satisfied_alt_24"
+            app:key="setting_whitelist"
+            app:summary="决定单个应用是否检测广告"
+            app:title="应用白名单" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="高级功能">
+        <Preference
+            app:icon="@drawable/baseline_architecture_24"
+            app:key="setting_activity_customization"
+            app:summary="手动采集应用的跳过按钮"
+            app:title="采集按钮" />
+
+        <MultiSelectListPreference
+            app:dialogTitle="勾选要保留的应用"
+            app:entries="@array/empty_entries"
+            app:entryValues="@array/empty_entries"
+            app:icon="@drawable/baseline_format_list_bulleted_24"
+            app:key="setting_activity_widgets"
+            app:summary="保留或者删除已采集跳过按钮的应用"
+            app:title="管理已采集按钮的应用" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

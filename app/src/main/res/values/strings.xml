@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">雷跳跳</string>
+    <string name="service_name">❤️ 雷跳跳 ❤️</string>
+    <string name="desc">\n🐰🐰🐰\n------------\n我的作用：自动帮您跳过开屏广告。\n------------\n用户须知：雷跳跳是一个单机应用，不会也不可能泄露您的任何隐私，请放心使用。\n------------\n\n\n🐟🦈🐟</string>
+    <string name="home_desc">🐟 自动帮您跳过开屏广告。\n ---------- \n🐠 单机应用，不会泄露您的任何隐私。\n ---------- \n🐡 为保证程序正常工作，请检查以下设置：</string>
+    <string name="app_list">应用列表</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="search">搜索</string>
+    <string name="share">分享</string>
+    <string name="check_ad">检测广告（默认开启，不需要可关闭）</string>
+    <string name="apple_green">🍏</string>
+    <string name="apple_red">🍎</string>
+    <string name="acc_tips">1. 通过 \"无障碍/辅助功能 -> 已安装 -> 雷跳跳\" 开启无障碍权限。</string>
+    <string name="power_tips">2. 在 \"电池优化\" 设置中，将 \"雷跳跳\" 设置为 \"不优化\" 。</string>
+    <string name="go_now">立即前往</string>
+    <string name="arrow"><![CDATA[>>]]></string>
+    <string name="already_setting"> OK </string>
+    <string name="settings">偏好设置</string>
+    <string name="pls_bind_acc">请先启动服务再进行设置~</string>
+</resources>
