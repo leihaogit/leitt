@@ -91,17 +91,22 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                     whiteList = Settings.getWhiteList()
                     updatePackage()
                 }
-                //采集按钮
+
                 TouchHelperService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY -> {
 
                 }
+                //打开采集按钮弹窗
+                TouchHelperService.ACTION_ACTIVITY_CUSTOMIZATION -> {
 
-                TouchHelperService.ACTION_STOP_SERVICE -> service.disableSelf()
-//                TouchHelperService.ACTION_ACTIVITY_CUSTOMIZATION -> showActivityCustomizationDialog()
-                TouchHelperService.ACTION_START_SKIP_AD -> {
-                    Log.e("halo", "屏幕解锁")
                 }
-//                TouchHelperService.ACTION_STOP_SKIP_AD -> stopSkipAdProcessInner()
+
+                TouchHelperService.ACTION_START_SKIP_AD -> {
+                    Log.e("halo", "启动跳广告进程")
+                }
+
+                TouchHelperService.ACTION_STOP_SKIP_AD -> {
+                    Log.e("halo", "关闭跳广告进程")
+                }
             }
             true
         }

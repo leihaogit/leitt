@@ -6,7 +6,7 @@
         <SwitchPreferenceCompat
             app:icon="@drawable/baseline_power_settings_new_24"
             app:key="function"
-            app:summaryOff="功能已关闭"
+            app:summaryOff="功能未开启"
             app:summaryOn="功能已开启"
             app:title="自动跳过广告" />
 

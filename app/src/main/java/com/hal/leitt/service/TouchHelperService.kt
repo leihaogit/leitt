@@ -23,20 +23,17 @@ class TouchHelperService : AccessibilityService() {
         //包列表刷新
         const val ACTION_REFRESH_PACKAGE = 2
 
-        //
+        //控件采集
         const val ACTION_REFRESH_CUSTOMIZED_ACTIVITY = 3
 
         //控件采集
         const val ACTION_ACTIVITY_CUSTOMIZATION = 4
 
-        //终止服务
-        const val ACTION_STOP_SERVICE = 5
+        //开始跳广告进程
+        const val ACTION_START_SKIP_AD = 5
 
-        //跳广告功能开启
-        const val ACTION_START_SKIP_AD = 6
-
-        //跳广告功能关闭
-        const val ACTION_STOP_SKIP_AD = 7
+        //关闭跳广告进程
+        const val ACTION_STOP_SKIP_AD = 6
 
         private var mService: WeakReference<TouchHelperService>? = null
 
@@ -69,7 +66,7 @@ class TouchHelperService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        //判断跳广告功能是否开启
+        //判断跳广告功能是否开启，是的话再处理其他的事
         if (Settings.isFunctionOn()) {
             serviceImpl?.onAccessibilityEvent(event)
         }
