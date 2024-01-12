@@ -2,7 +2,11 @@ package com.hal.leitt.service
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
+import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import android.widget.Toast
+import com.hal.leitt.ktx.Constant
+import com.tencent.mmkv.MMKV
 import java.lang.ref.WeakReference
 
 
@@ -51,10 +55,15 @@ class TouchHelperService : AccessibilityService() {
             serviceImpl = TouchHelperServiceImpl(this)
         }
         serviceImpl?.onServiceConnected()
+        MMKV.defaultMMKV().encode(Constant.IS_FUNCTION_ON, true)
+        MMKV.defaultMMKV().encode(Constant.IS_ACC_RUNNING, true)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        serviceImpl?.onAccessibilityEvent(event)
+        //判断跳广告功能是否开启
+        if (MMKV.defaultMMKV().decodeBool(Constant.IS_FUNCTION_ON)) {
+            serviceImpl?.onAccessibilityEvent(event)
+        }
     }
 
     override fun onInterrupt() {
@@ -64,6 +73,8 @@ class TouchHelperService : AccessibilityService() {
         serviceImpl?.onUnbind()
         serviceImpl = null
         mService = null
+        MMKV.defaultMMKV().encode(Constant.IS_FUNCTION_ON, false)
+        MMKV.defaultMMKV().encode(Constant.IS_ACC_RUNNING, false)
         return super.onUnbind(intent)
     }
 
