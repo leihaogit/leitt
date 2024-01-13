@@ -10,14 +10,20 @@ package com.hal.leitt.ktx
 
 object Constant {
     //基础跳广告功能是否开启
-    const val IS_FUNCTION_ON = "is_function_on"
+    const val IS_FUNCTION_ON = "IS_FUNCTION_ON"
 
     //广告检测时长
-    const val AD_DETECTION_DURATION = "ad_detection_duration"
+    const val AD_DETECTION_DURATION = "AD_DETECTION_DURATION"
 
     //关键字
-    const val KEYWORD = "keyword"
+    const val KEYWORD = "KEYWORD"
 
     //应用白名单
-    const val WHITELIST = "whitelist"
+    const val WHITELIST = "WHITELIST"
+
+    //包名及对应控件信息
+    const val PACKAGE_WIDGETS = "PACKAGE_WIDGETS"
+
+    //包名及对应位置信息
+    const val PACKAGE_POSITIONS = "PACKAGE_POSITIONS"
 }

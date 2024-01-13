@@ -5,4 +5,6 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="custom_color">#3C9B88</color>
     <color name="red">#FF0000</color>
+    <color name="dialog_bg_color_able">#448AFF</color>
+    <color name="dialog_bg_color_enable">#80A1A1A1</color>
 </resources>

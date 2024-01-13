@@ -23,11 +23,11 @@ class TouchHelperService : AccessibilityService() {
         //包列表刷新
         const val ACTION_REFRESH_PACKAGE = 2
 
-        //控件采集
-        const val ACTION_REFRESH_CUSTOMIZED_ACTIVITY = 3
+        //自定义按钮采集弹窗
+        const val ACTION_ACTIVITY_CUSTOMIZATION = 3
 
-        //控件采集
-        const val ACTION_ACTIVITY_CUSTOMIZATION = 4
+        //刷新采集到的控件或者位置信息
+        const val ACTION_REFRESH_CUSTOMIZED_ACTIVITY = 4
 
         //开始跳广告进程
         const val ACTION_START_SKIP_AD = 5

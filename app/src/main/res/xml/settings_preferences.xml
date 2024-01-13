@@ -54,6 +54,15 @@
             app:key="setting_activity_widgets"
             app:summary="保留或者删除已采集跳过按钮的应用"
             app:title="管理已采集按钮的应用" />
+
+        <MultiSelectListPreference
+            app:dialogTitle="勾选要保留的程序"
+            app:entries="@array/empty_entries"
+            app:entryValues="@array/empty_entries"
+            app:icon="@drawable/baseline_my_location_24"
+            app:key="setting_activity_positions"
+            app:summary="保留或者删除已采集跳过区域的应用"
+            app:title="管理已采集区域的应用" />
     </PreferenceCategory>
 
 </PreferenceScreen>

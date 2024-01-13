@@ -8,11 +8,11 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.EditTextPreference
+import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hal.leitt.R
 import com.hal.leitt.adapter.AppInfoAdapter
 import com.hal.leitt.entity.AppInfo
+import com.hal.leitt.entity.PackagePositionDescription
+import com.hal.leitt.entity.PackageWidgetDescription
 import com.hal.leitt.ktx.Settings
 import com.hal.leitt.service.TouchHelperService
 import kotlinx.coroutines.Dispatchers
@@ -41,21 +43,34 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private lateinit var packageManager: PackageManager
     private lateinit var inflater: LayoutInflater
-    private lateinit var winManager: WindowManager
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.root_preferences, rootKey)
+        setPreferencesFromResource(R.xml.settings_preferences, rootKey)
         packageManager = requireContext().packageManager
         inflater =
             requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        winManager = requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
     }
+
+    private lateinit var activityPositions: MultiSelectListPreference
+    private lateinit var activityWidgets: MultiSelectListPreference
+
+    //包名及对应控件信息映射
+    private var mapPackageWidgets: MutableMap<String, MutableSet<PackageWidgetDescription>> =
+        mutableMapOf()
+
+    //包名及对应位置信息映射
+    private var mapPackagePositions: MutableMap<String, PackagePositionDescription> = mutableMapOf()
 
     override fun onResume() {
         super.onResume()
         //初始化偏好设置
         initPreferences()
+
+        mapPackageWidgets = Settings.getMapPackageWidgets()
+        updateMultiSelectListPreferenceEntries(activityWidgets, mapPackageWidgets.keys)
+
+        mapPackagePositions = Settings.getMapPackagePositions()
+        updateMultiSelectListPreferenceEntries(activityPositions, mapPackagePositions.keys)
     }
 
     private fun initPreferences() {
@@ -164,6 +179,58 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        /**
+         *  管理已经采集按钮的应用
+         */
+        activityWidgets = findPreference("setting_activity_widgets")!!
+        mapPackageWidgets = Settings.getMapPackageWidgets()
+        updateMultiSelectListPreferenceEntries(activityWidgets, mapPackageWidgets.keys)
+        activityWidgets.setOnPreferenceChangeListener { _, newValue ->
+            val results = newValue as MutableSet<*>
+            val keys: MutableSet<String> = mapPackageWidgets.keys.toMutableSet()
+            for (key in keys) {
+                if (!results.contains(key)) {
+                    mapPackageWidgets.remove(key)
+                }
+            }
+            Settings.setMapPackageWidgets(mapPackageWidgets)
+            updateMultiSelectListPreferenceEntries(activityWidgets, mapPackageWidgets.keys)
+            TouchHelperService.dispatchAction(TouchHelperService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY)
+            true
+        }
+
+        /**
+         * 管理已经采集位置的应用
+         */
+        activityPositions = findPreference("setting_activity_positions")!!
+        mapPackagePositions = Settings.getMapPackagePositions()
+        updateMultiSelectListPreferenceEntries(activityPositions, mapPackagePositions.keys)
+        activityPositions.setOnPreferenceChangeListener { _, newValue ->
+            val results = newValue as MutableSet<*>
+            val keys: MutableSet<String> = mapPackagePositions.keys.toMutableSet()
+            for (key in keys) {
+                if (!results.contains(key)) {
+                    mapPackagePositions.remove(key)
+                }
+            }
+            Settings.setMapPackagePositions(mapPackagePositions)
+            updateMultiSelectListPreferenceEntries(activityPositions, mapPackagePositions.keys)
+            TouchHelperService.dispatchAction(TouchHelperService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY)
+            true
+        }
+
+    }
+
+    /**
+     * 更新偏好设置中某一个MultiSelectListPreference的内容
+     */
+    private fun updateMultiSelectListPreferenceEntries(
+        preference: MultiSelectListPreference, keys: Set<String>
+    ) {
+        val entries = keys.toTypedArray<CharSequence>()
+        preference.entries = entries
+        preference.entryValues = entries
+        preference.values = keys
     }
 
     /**

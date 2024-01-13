@@ -33,13 +33,15 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
 }
 
 dependencies {
+    //汉字拼音转换
     implementation("com.belerweb:pinyin4j:2.5.1")
+    implementation("com.google.code.gson:gson:2.8.9")
     implementation("androidx.activity:activity-ktx:1.7.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("com.tencent:mmkv:1.2.13")

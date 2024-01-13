@@ -1,5 +1,9 @@
 package com.hal.leitt.ktx
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.hal.leitt.entity.PackagePositionDescription
+import com.hal.leitt.entity.PackageWidgetDescription
 import com.tencent.mmkv.MMKV
 
 /**
@@ -14,8 +18,9 @@ object Settings {
     /**
      * 获取关键字列表，默认"跳过"
      */
-    fun getKeyWords(): List<String> {
-        return MMKV.defaultMMKV().decodeString(Constant.KEYWORD, "跳过")!!.split(" ")
+    fun getKeyWords(): MutableList<String> {
+        return MMKV.defaultMMKV().decodeString(Constant.KEYWORD, "跳过")!!
+            .split(" ") as MutableList<String>
     }
 
     /**
@@ -56,7 +61,7 @@ object Settings {
     /**
      * 设置检测应用白名单
      */
-    fun setWhiteList(list: Set<String>) {
+    fun setWhiteList(list: MutableSet<String>) {
         MMKV.defaultMMKV().encode(Constant.WHITELIST, list)
     }
 
@@ -66,5 +71,45 @@ object Settings {
     fun getWhiteList(): MutableSet<String> {
         return MMKV.defaultMMKV().decodeStringSet(Constant.WHITELIST, mutableSetOf())!!
     }
+
+    /**
+     * 获取包控件信息映射
+     */
+    fun getMapPackageWidgets(): MutableMap<String, MutableSet<PackageWidgetDescription>> {
+        val jsonString = MMKV.defaultMMKV().decodeString(Constant.PACKAGE_WIDGETS, "{}")
+        val gson = Gson()
+        val type =
+            object : TypeToken<MutableMap<String, MutableSet<PackageWidgetDescription>>>() {}.type
+        return gson.fromJson(jsonString, type)
+    }
+
+    /**
+     * 保存包控件信息映射
+     */
+    fun setMapPackageWidgets(mapPackageWidgets: MutableMap<String, MutableSet<PackageWidgetDescription>>) {
+        val gson = Gson()
+        val jsonString = gson.toJson(mapPackageWidgets)
+        MMKV.defaultMMKV().encode(Constant.PACKAGE_WIDGETS, jsonString)
+    }
+
+    /**
+     * 保存包位置信息映射
+     */
+    fun setMapPackagePositions(mapPackagePositions: MutableMap<String, PackagePositionDescription>) {
+        val gson = Gson()
+        val jsonString = gson.toJson(mapPackagePositions)
+        MMKV.defaultMMKV().encode(Constant.PACKAGE_POSITIONS, jsonString)
+    }
+
+    /**
+     * 获取包位置信息映射
+     */
+    fun getMapPackagePositions(): MutableMap<String, PackagePositionDescription> {
+        val jsonString = MMKV.defaultMMKV().decodeString(Constant.PACKAGE_POSITIONS, "{}")
+        val gson = Gson()
+        val type = object : TypeToken<MutableMap<String, PackagePositionDescription>>() {}.type
+        return gson.fromJson(jsonString, type)
+    }
+
 
 }
