@@ -65,8 +65,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val function: SwitchPreferenceCompat? = findPreference("function")
         function?.let {
 
-            //初始化
-            it.isChecked = Settings.isFunctionOn()
+            //初始化，意外中止可能会导致 MMKV 更新不了字段，所以额外判断一下
+            if (!TouchHelperService.isServiceRunning()) {
+                it.isChecked = false
+            } else it.isChecked = Settings.isFunctionOn()
 
             it.setOnPreferenceChangeListener { _, newValue ->
                 val isChecked = newValue as Boolean
@@ -206,7 +208,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     /**
-     * 获取白名单应用，有点耗时，开个协程来做
+     * 获取所有应用列表，耗时，使用协程来做
      */
     private suspend fun getAppInfoList(): List<AppInfo> = withContext(Dispatchers.IO) {
         //查询设备上能够响应主活动启动意图的应用程序，获取所有应用程序的包名，并保存在appList列表中
