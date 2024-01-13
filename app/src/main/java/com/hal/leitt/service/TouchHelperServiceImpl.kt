@@ -607,21 +607,16 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                 val packagePositionDescription = mapPackagePositions[currentPackageName]
                 packagePositionDescription?.let {
                     Log.e("halo", "有位置信息，开始检测位置信息")
-                    // try to click the position in the activity for multiple times
-
-                    // try to click the position in the activity for multiple times
                     val futures = arrayOf<Future<*>?>(null)
                     futures[0] = taskExecutorService.scheduleAtFixedRate(
                         object : Runnable {
                             var num = 0
                             override fun run() {
                                 if (num < PACKAGE_POSITION_CLICK_RETRY) {
-                                    if (currentActivityName == packagePositionDescription.activityName) {
+                                    if (currentActivityName == it.activityName) {
                                         Log.e("halo", "根据位置跳过了广告")
                                         click(
-                                            packagePositionDescription.x,
-                                            packagePositionDescription.y,
-                                            40
+                                            it.x, it.y, 40
                                         )
                                     }
                                     num++
