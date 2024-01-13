@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -65,12 +66,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onResume()
         //初始化偏好设置
         initPreferences()
-
-        mapPackageWidgets = Settings.getMapPackageWidgets()
-        updateMultiSelectListPreferenceEntries(activityWidgets, mapPackageWidgets.keys)
-
-        mapPackagePositions = Settings.getMapPackagePositions()
-        updateMultiSelectListPreferenceEntries(activityPositions, mapPackagePositions.keys)
     }
 
     private fun initPreferences() {
@@ -204,6 +199,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
          */
         activityPositions = findPreference("setting_activity_positions")!!
         mapPackagePositions = Settings.getMapPackagePositions()
+        Log.e("halo", "位置信息: $mapPackagePositions")
         updateMultiSelectListPreferenceEntries(activityPositions, mapPackagePositions.keys)
         activityPositions.setOnPreferenceChangeListener { _, newValue ->
             val results = newValue as MutableSet<*>

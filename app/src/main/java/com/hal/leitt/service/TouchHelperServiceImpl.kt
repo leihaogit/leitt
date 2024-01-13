@@ -56,6 +56,22 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
     //处理广播信息的Handler
     var receiverHandler: Handler? = null
 
+    //执行跳广告操作的线程池
+    private val taskExecutorService: ScheduledExecutorService by lazy {
+        Executors.newSingleThreadScheduledExecutor();
+    }
+
+    companion object {
+        //第一次包位置点击的延迟时间
+        private const val PACKAGE_POSITION_CLICK_FIRST_DELAY = 300
+
+        //包位置点击重试的时间间隔
+        private const val PACKAGE_POSITION_CLICK_RETRY_INTERVAL = 500
+
+        //包位置点击的最大重试次数
+        private const val PACKAGE_POSITION_CLICK_RETRY = 6
+    }
+
     //关键字列表
     private var keyWordList: MutableList<String> = mutableListOf()
 
@@ -75,17 +91,6 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
 
     //用户开启屏幕广播接收器
     private val userPresentReceiver by lazy { UserPresentReceiver() }
-
-    companion object {
-        //第一次包位置点击的延迟时间
-        private const val PACKAGE_POSITION_CLICK_FIRST_DELAY = 300
-
-        //包位置点击重试的时间间隔
-        private const val PACKAGE_POSITION_CLICK_RETRY_INTERVAL = 500
-
-        //包位置点击的最大重试次数
-        private const val PACKAGE_POSITION_CLICK_RETRY = 6
-    }
 
     //包管理器
     private val packageManager: PackageManager = service.packageManager
@@ -116,11 +121,6 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
     private var setTargetedWidgets: MutableSet<PackageWidgetDescription>? = null
 
     private var clickedWidgets: MutableSet<String> = mutableSetOf()
-
-    //执行跳广告操作的线程池
-    private val taskExecutorService: ScheduledExecutorService by lazy {
-        Executors.newSingleThreadScheduledExecutor();
-    }
 
 
     /**
@@ -191,12 +191,10 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                 }
 
                 TouchHelperService.ACTION_START_SKIP_AD -> {
-                    Log.e("halo", "启动跳广告进程")
                     startSkipAdProcess()
                 }
 
                 TouchHelperService.ACTION_STOP_SKIP_AD -> {
-                    Log.e("halo", "关闭跳广告进程")
                     stopSkipAdProcessInner()
                 }
             }
@@ -247,7 +245,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         val imageTarget = ImageView(service)
         imageTarget.setImageResource(R.drawable.drawable_target)
 
-        val customizationParams: WindowManager.LayoutParams = WindowManager.LayoutParams()
+        val customizationParams = WindowManager.LayoutParams()
         customizationParams.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
         customizationParams.format = PixelFormat.TRANSPARENT
         customizationParams.gravity = Gravity.START or Gravity.TOP
@@ -257,9 +255,9 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         customizationParams.height = height / 5
         customizationParams.x = (metrics.widthPixels - customizationParams.width) / 2
         customizationParams.y = metrics.heightPixels - customizationParams.height
-        customizationParams.alpha = 0.8f
+        customizationParams.alpha = 0.95f
 
-        val outlineParams: WindowManager.LayoutParams = WindowManager.LayoutParams()
+        val outlineParams = WindowManager.LayoutParams()
         outlineParams.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
         outlineParams.format = PixelFormat.TRANSPARENT
         outlineParams.gravity = Gravity.START or Gravity.TOP
@@ -269,13 +267,14 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         outlineParams.alpha = 0f
 
-        val targetParams: WindowManager.LayoutParams = WindowManager.LayoutParams()
+        val targetParams = WindowManager.LayoutParams()
         targetParams.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
         targetParams.format = PixelFormat.TRANSPARENT
         targetParams.flags =
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         targetParams.gravity = Gravity.START or Gravity.TOP
-        targetParams.width = width / 4.also { targetParams.height = it }
+        targetParams.width = width / 4
+        targetParams.height = width / 4
         targetParams.x = (metrics.widthPixels - targetParams.width) / 2
         targetParams.y = (metrics.heightPixels - targetParams.height) / 2
         targetParams.alpha = 0f
@@ -307,8 +306,6 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         imageTarget.setOnTouchListener(object : OnTouchListener {
             var x = 0
             var y = 0
-            var mWidth = targetParams.width / 2
-            var mHeight = targetParams.height / 2
             override fun onTouch(v: View, event: MotionEvent): Boolean {
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
@@ -327,8 +324,8 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                         windowManager.updateViewLayout(imageTarget, targetParams)
                         positionDescription.packageName = currentPackageName
                         positionDescription.activityName = currentActivityName
-                        positionDescription.x = targetParams.x + mWidth
-                        positionDescription.y = targetParams.y + mHeight
+                        positionDescription.x = targetParams.x + width
+                        positionDescription.y = targetParams.y + height
                         tvPackageName.text = positionDescription.packageName
                         tvActivityName.text = positionDescription.activityName
                         tvPositionInfo.text =
@@ -416,6 +413,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         })
 
         btShowTarget.setOnClickListener { v ->
+            Log.e("halo", "点击了显示准心按钮")
             val button = v as Button
             if (targetParams.alpha == 0f) {
                 positionDescription.packageName = currentPackageName
@@ -472,28 +470,6 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         windowManager.addView(viewCustomization, customizationParams)
         windowManager.addView(imageTarget, targetParams)
         isShowing = true
-    }
-
-    private fun dumpChildNodes(
-        root: AccessibilityNodeInfo?,
-        list: MutableList<AccessibilityNodeInfo>,
-        dumpString: java.lang.StringBuilder,
-        indent: String
-    ) {
-        if (root == null) return
-        list.add(root)
-        dumpString.append(indent + describeAccessibilityNode(root) + "\n")
-        for (n in 0 until root.childCount) {
-            val child = root.getChild(n)
-            dumpChildNodes(child, list, dumpString, "$indent ")
-        }
-    }
-
-    private fun dumpRootNode(root: AccessibilityNodeInfo): String {
-        val nodeList = java.util.ArrayList<AccessibilityNodeInfo>()
-        val dumpString = StringBuilder()
-        dumpChildNodes(root, nodeList, dumpString, "")
-        return dumpString.toString()
     }
 
     private fun describeAccessibilityNode(e: AccessibilityNodeInfo?): String {
@@ -599,6 +575,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         if (tempPkgName == null || tempClassName == null) return
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             val pkgName = tempPkgName.toString()
+            Log.e("halo", "启动了: $pkgName")
             //如果是输入法
             if (setIMEApps.contains(pkgName)) return
             val actName = tempClassName.toString()
@@ -611,6 +588,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                     currentActivityName = actName
                     stopSkipAdProcess()
                     if (setPackages.contains(pkgName)) {
+                        Log.e("halo", "该应用需要检测广告")
                         startSkipAdProcess()
                     }
                 }
@@ -627,8 +605,11 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
             if (skipAdByActivityPosition) {
                 skipAdByActivityPosition = false
                 val packagePositionDescription = mapPackagePositions[currentPackageName]
-                if (packagePositionDescription != null) {
-                    Log.e("halo", "正在根据位置跳过广告")
+                packagePositionDescription?.let {
+                    Log.e("halo", "有位置信息，开始检测位置信息")
+                    // try to click the position in the activity for multiple times
+
+                    // try to click the position in the activity for multiple times
                     val futures = arrayOf<Future<*>?>(null)
                     futures[0] = taskExecutorService.scheduleAtFixedRate(
                         object : Runnable {
@@ -636,6 +617,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                             override fun run() {
                                 if (num < PACKAGE_POSITION_CLICK_RETRY) {
                                     if (currentActivityName == packagePositionDescription.activityName) {
+                                        Log.e("halo", "根据位置跳过了广告")
                                         click(
                                             packagePositionDescription.x,
                                             packagePositionDescription.y,
@@ -661,6 +643,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                 setTargetedWidgets = mapPackageWidgets[currentPackageName]
             }
             setTargetedWidgets?.let {
+                Log.e("halo", "有控件信息，开始检测控件信息")
                 taskExecutorService.execute {
                     iterateNodesToSkipAd(
                         service.rootInActiveWindow, it
@@ -754,12 +737,12 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         var isFound = false
         for (keyword in keyWordList) {
             // 内容包含关键字, 并且长度不能太长
-            if (text.toString()
-                    .contains(keyword) && text.toString().length <= (keyword.length + 3)
+            if (text != null && text.toString().length <= keyword.length + 6 && text.toString()
+                    .contains(keyword)
             ) {
                 isFound = true
-            } else if (description.toString()
-                    .contains(keyword) && description.toString().length <= (keyword.length + 3)
+            } else if (description != null && description.toString().length <= keyword.length + 6 && description.toString()
+                    .contains(keyword)
             ) {
                 isFound = true
             }
@@ -771,9 +754,9 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
             val nodeDesc: String = describeAccessibilityNode(node)
             if (!clickedWidgets.contains(nodeDesc)) {
                 clickedWidgets.add(nodeDesc)
-                Log.e("halo", "正在根据关键字跳过广告")
                 val clicked = node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                 if (!clicked) {
+                    Log.e("halo", "通过检测关键字跳过了广告")
                     val rect = Rect()
                     node.getBoundsInScreen(rect)
                     click(rect.centerX(), rect.centerY(), 20)
@@ -794,17 +777,16 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         val temRect = Rect()
         node.getBoundsInScreen(temRect)
         //View的唯一标识符
-        val cId: CharSequence = node.viewIdResourceName
+        val cId: CharSequence? = node.viewIdResourceName
         //node节点的内容描述
-        val cDescribe = node.contentDescription
+        val cDescribe: CharSequence? = node.contentDescription
         //node节点的文本内容
-        val cText = node.text
-
+        val cText: CharSequence? = node.text
         for (e in set) {
             var isFound = false
             if (temRect == e.position) {
                 isFound = true
-            } else if (e.idName.isNotEmpty() && cId.toString() == e.idName) {
+            } else if (cId != null && e.idName.isNotEmpty() && cId.toString() == e.idName) {
                 isFound = true
             } else if (cDescribe != null && e.description.isNotEmpty() && cDescribe.toString()
                     .contains(e.description)
@@ -817,7 +799,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                 val nodeDesc: String = describeAccessibilityNode(node)
                 if (!clickedWidgets.contains(nodeDesc)) {
                     clickedWidgets.add(nodeDesc)
-                    Log.e("halo", "正在根据控件跳过广告")
+                    Log.e("halo", "通过指定控件跳过了广告")
                     if (e.onlyClick) {
                         click(temRect.centerX(), temRect.centerY(), 20)
                     } else {
@@ -858,6 +840,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
      * 开启跳广告进程
      */
     private fun startSkipAdProcess() {
+        Log.e("halo", "开始跳广告进程")
         skipAdRunning = true
         skipAdByActivityPosition = true
         skipAdByActivityWidget = true
@@ -874,6 +857,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
      * 停止跳过广告进程
      */
     private fun stopSkipAdProcessInner() {
+        Log.e("halo", "停止跳广告进程")
         skipAdRunning = false
         skipAdByActivityPosition = false
         skipAdByActivityWidget = false
