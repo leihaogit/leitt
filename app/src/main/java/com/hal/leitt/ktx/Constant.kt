@@ -26,4 +26,5 @@ object Constant {
 
     //包名及对应位置信息
     const val PACKAGE_POSITIONS = "PACKAGE_POSITIONS"
+
 }

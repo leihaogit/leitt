@@ -49,14 +49,14 @@
             </intent-filter>
         </activity>
 
-        <receiver
-            android:name=".receiver.UserPresentReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter android:priority="9999">
-                <action android:name="android.intent.action.USER_PRESENT" />
-            </intent-filter>
-        </receiver>
+<!--        <receiver-->
+<!--            android:name=".receiver.UserPresentReceiver"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true">-->
+<!--            <intent-filter android:priority="1000">-->
+<!--                <action android:name="android.intent.action.USER_PRESENT" />-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
         <receiver
             android:name=".receiver.PackageChangeReceiver"
             android:enabled="true"

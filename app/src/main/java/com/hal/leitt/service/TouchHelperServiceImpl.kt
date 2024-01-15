@@ -36,7 +36,6 @@ import com.hal.leitt.entity.PackagePositionDescription
 import com.hal.leitt.entity.PackageWidgetDescription
 import com.hal.leitt.ktx.Settings
 import com.hal.leitt.receiver.PackageChangeReceiver
-import com.hal.leitt.receiver.UserPresentReceiver
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.ScheduledExecutorService
@@ -89,14 +88,11 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         PackageChangeReceiver()
     }
 
-    //用户开启屏幕广播接收器
-    private val userPresentReceiver by lazy { UserPresentReceiver() }
-
     //包管理器
     private val packageManager: PackageManager = service.packageManager
 
-    private var currentPackageName = ""
-    private var currentActivityName = ""
+    private var currentPackageName = "Initial PackageName"
+    private var currentActivityName = "Initial ClassName"
 
     //包名及对应控件信息映射
     private var mapPackageWidgets: MutableMap<String, MutableSet<PackageWidgetDescription>> =
@@ -130,15 +126,12 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
 
         Log.e("halo", "==========无障碍服务已启动==========")
 
-        currentPackageName = "Initial PackageName"
-        currentActivityName = "Initial ClassName"
-
-        //初始化关键字列表
-        keyWordList = Settings.getKeyWords()
-
         //初始化白名单列表
         whiteList = Settings.getWhiteList()
         updatePackage()
+
+        //初始化关键字列表
+        keyWordList = Settings.getKeyWords()
 
         //初始化包及控件信息映射
         mapPackageWidgets = Settings.getMapPackageWidgets()
@@ -152,10 +145,6 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
     }
 
     private fun installReceiverAndHandler() {
-
-        //广播注册
-        service.registerReceiver(userPresentReceiver, IntentFilter(Intent.ACTION_USER_PRESENT))
-        Log.e("halo", "用户屏幕开启广播已注册")
         val actions = IntentFilter()
         actions.addAction(Intent.ACTION_PACKAGE_ADDED)
         actions.addAction(Intent.ACTION_PACKAGE_REMOVED)
@@ -179,23 +168,15 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                 }
 
                 TouchHelperService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY -> {
-                    Log.e("halo", "包及对应控件信息映射刷新: $mapPackageWidgets")
+                    Log.e("halo", "控件信息刷新: $mapPackageWidgets")
                     mapPackageWidgets = Settings.getMapPackageWidgets()
-                    Log.e("halo", "包及对应位置信息映射刷新: $mapPackageWidgets")
+                    Log.e("halo", "位置信息刷新: $mapPackageWidgets")
                     mapPackagePositions = Settings.getMapPackagePositions()
                 }
                 //打开采集按钮弹窗
                 TouchHelperService.ACTION_ACTIVITY_CUSTOMIZATION -> {
                     Log.e("halo", "打开采集按钮弹窗")
                     showActivityCustomizationDialog()
-                }
-
-                TouchHelperService.ACTION_START_SKIP_AD -> {
-                    startSkipAdProcess()
-                }
-
-                TouchHelperService.ACTION_STOP_SKIP_AD -> {
-                    stopSkipAdProcessInner()
                 }
             }
             true
@@ -447,7 +428,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                 set.add(temWidget)
             }
             btAddWidget.isEnabled = false
-            tvPackageName.text = widgetDescription.packageName + " (以下控件数据已保存)"
+            tvPackageName.text = widgetDescription.packageName + " (控件数据已保存)"
             Settings.setMapPackageWidgets(mapPackageWidgets)
         }
 
@@ -455,7 +436,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
             mapPackagePositions[positionDescription.packageName] =
                 PackagePositionDescription(positionDescription)
             btAddPosition.isEnabled = false
-            tvPackageName.text = positionDescription.packageName + " (以下坐标数据已保存)"
+            tvPackageName.text = positionDescription.packageName + " (坐标数据已保存)"
             Settings.setMapPackagePositions(mapPackagePositions)
         }
 
@@ -532,38 +513,34 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         for (e in resolveInfoList) {
             setPackages.add(e.activityInfo.packageName)
         }
-        Log.e("halo", "待过滤时，setPackages的大小: " + setPackages.size)
+        Log.e("halo", "过滤前，setPackages 的大小: " + setPackages.size)
 
-        //查询设备上所有的主屏幕（Home）应用程序，，并放入 setTemps 中
+        Log.e("halo", "白名单列表大小: ${whiteList.size}")
+
+        //查询设备上所有的主屏幕（Home）应用程序，并放入 setHomes 中
         intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
         resolveInfoList = packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL)
         for (e in resolveInfoList) {
             setTemps.add(e.activityInfo.packageName)
         }
-        Log.e("halo", "主屏幕过滤后，setTemps的大小: " + setTemps.size)
+        Log.e("halo", "主屏幕列表大小: " + setTemps.size)
 
-        //查询设备上所有的输入法（imm）应用程序，并放入 setIMEApps 中
+        //查询设备上所有的输入法（ime）应用程序，并放入 setIMEApps 中
         val inputMethodInfoList =
             (service.getSystemService(AccessibilityService.INPUT_METHOD_SERVICE) as InputMethodManager).inputMethodList
         for (e in inputMethodInfoList) {
             setIMEApps.add(e.packageName)
         }
-        Log.e("halo", "输入法过滤后，setIMEApps的大小: " + setIMEApps.size)
-
-        //将当前应用程序和系统设置应用程序加入临时过滤集合
-        setTemps.add(service.packageName)
-        setTemps.add("com.android.settings")
-        Log.e("halo", "添加自身和设置之后，setTemps的大小: " + setTemps.size)
+        Log.e("halo", "输入法列表大小: " + setIMEApps.size)
 
         //移除白名单+输入法+临时列表
         setPackages.removeAll(whiteList)
         setPackages.removeAll(setIMEApps)
         setPackages.removeAll(setTemps)
 
-        Log.e("halo", "移除白名单+输入法+临时列表之后，setPackages 最终的大小：" + setPackages.size)
+        Log.e("halo", "过滤后，setPackages 的大小：" + setPackages.size)
 
         Log.e("halo", "==========结束过滤包列表=========")
-
     }
 
     /**
@@ -574,26 +551,23 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         val tempClassName = event.className
         if (tempPkgName == null || tempClassName == null) return
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            val pkgName = tempPkgName.toString()
-            Log.e("halo", "启动了: $pkgName")
-            //如果是输入法
+            val pkgName: String = tempPkgName.toString()
             if (setIMEApps.contains(pkgName)) return
             val actName = tempClassName.toString()
-            //判断是否是系统应用
             val isActivity = !actName.startsWith("android.") && !actName.startsWith("androidx.")
             if (currentPackageName != pkgName) {
                 if (isActivity) {
-                    //其他包下的activity一定是一个新的activity
                     currentPackageName = pkgName
                     currentActivityName = actName
-                    stopSkipAdProcess()
                     if (setPackages.contains(pkgName)) {
-                        Log.e("halo", "该应用需要检测广告")
+                        Log.e("halo", "打开：$currentPackageName，该应用需要检测广告")
                         startSkipAdProcess()
+                    } else {
+                        Log.e("halo", "打开：$currentPackageName，该应用不需要检测广告")
+                        stopSkipAdProcess()
                     }
                 }
             } else {
-                // 在当前包
                 if (isActivity) {
                     if (currentActivityName != actName) {
                         currentActivityName = actName
@@ -636,13 +610,13 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
             if (skipAdByActivityWidget) {
                 skipAdByActivityWidget = false
                 setTargetedWidgets = mapPackageWidgets[currentPackageName]
-            }
-            setTargetedWidgets?.let {
-                Log.e("halo", "有控件信息，开始检测控件信息")
-                taskExecutorService.execute {
-                    iterateNodesToSkipAd(
-                        service.rootInActiveWindow, it
-                    )
+                setTargetedWidgets?.let {
+                    Log.e("halo", "有控件信息，开始检测控件信息")
+                    taskExecutorService.execute {
+                        iterateNodesToSkipAd(
+                            service.rootInActiveWindow, it
+                        )
+                    }
                 }
             }
             // 通过关键字跳过
@@ -653,22 +627,17 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                     )
                 }
             }
-        } else if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+        } else if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
             if (!setPackages.contains(tempPkgName.toString())) {
                 return
             }
+            Log.e("halo", "界面变化：${currentActivityName}，该界面需要检测广告")
             setTargetedWidgets?.let {
-                taskExecutorService.execute {
-                    iterateNodesToSkipAd(
-                        event.source!!, it
-                    )
-                }
+                taskExecutorService.execute { iterateNodesToSkipAd(event.source!!, it) }
             }
             if (skipAdByKeyword) {
                 taskExecutorService.execute {
-                    iterateNodesToSkipAd(
-                        event.source!!, null
-                    )
+                    iterateNodesToSkipAd(event.source!!, null)
                 }
             }
         }
@@ -751,7 +720,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                 clickedWidgets.add(nodeDesc)
                 val clicked = node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                 if (!clicked) {
-                    Log.e("halo", "通过检测关键字跳过了广告")
+                    Log.e("halo", "通过关键字跳过了广告")
                     val rect = Rect()
                     node.getBoundsInScreen(rect)
                     click(rect.centerX(), rect.centerY(), 20)
@@ -794,7 +763,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                 val nodeDesc: String = describeAccessibilityNode(node)
                 if (!clickedWidgets.contains(nodeDesc)) {
                     clickedWidgets.add(nodeDesc)
-                    Log.e("halo", "通过指定控件跳过了广告")
+                    Log.e("halo", "通过控件信息跳过了广告")
                     if (e.onlyClick) {
                         click(temRect.centerX(), temRect.centerY(), 20)
                     } else {
@@ -827,8 +796,13 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
      * 停止跳广告进程
      */
     private fun stopSkipAdProcess() {
-        stopSkipAdProcessInner()
-        receiverHandler!!.removeMessages(TouchHelperService.ACTION_STOP_SKIP_AD)
+        Log.e("halo", "停止跳广告进程")
+        skipAdRunning = false
+        skipAdByActivityPosition = false
+        skipAdByActivityWidget = false
+        skipAdByKeyword = false
+        setTargetedWidgets = null
+        clickedWidgets.clear()
     }
 
     /**
@@ -842,27 +816,10 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         skipAdByKeyword = true
         setTargetedWidgets = null
         clickedWidgets.clear()
-        receiverHandler!!.removeMessages(TouchHelperService.ACTION_STOP_SKIP_AD)
-        receiverHandler!!.sendEmptyMessageDelayed(
-            TouchHelperService.ACTION_STOP_SKIP_AD, Settings.getAdDetectionDuration() * 1000L
-        )
     }
 
-    /**
-     * 停止跳过广告进程
-     */
-    private fun stopSkipAdProcessInner() {
-        Log.e("halo", "停止跳广告进程")
-        skipAdRunning = false
-        skipAdByActivityPosition = false
-        skipAdByActivityWidget = false
-        skipAdByKeyword = false
-        setTargetedWidgets = null
-    }
 
     fun onUnbind() {
-        service.unregisterReceiver(userPresentReceiver)
-        Log.e("halo", "用户屏幕开启广播已注销")
         service.unregisterReceiver(packageChangeReceiver)
         Log.e("halo", "系统包变化广播已注销")
         Log.e("halo", "==========无障碍服务已关闭==========")

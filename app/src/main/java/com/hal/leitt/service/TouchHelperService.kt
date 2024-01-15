@@ -29,12 +29,6 @@ class TouchHelperService : AccessibilityService() {
         //刷新采集到的控件或者位置信息
         const val ACTION_REFRESH_CUSTOMIZED_ACTIVITY = 4
 
-        //开始跳广告进程
-        const val ACTION_START_SKIP_AD = 5
-
-        //关闭跳广告进程
-        const val ACTION_STOP_SKIP_AD = 6
-
         private var mService: WeakReference<TouchHelperService>? = null
 
         fun dispatchAction(action: Int): Boolean {

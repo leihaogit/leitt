@@ -52,8 +52,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     }
 
-    private lateinit var activityPositions: MultiSelectListPreference
-    private lateinit var activityWidgets: MultiSelectListPreference
+    private lateinit var managePositions: MultiSelectListPreference
+    private lateinit var manageWidgets: MultiSelectListPreference
 
     //包名及对应控件信息映射
     private var mapPackageWidgets: MutableMap<String, MutableSet<PackageWidgetDescription>> =
@@ -72,8 +72,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         /**
          * 基础功能开关
          */
-        val function: SwitchPreferenceCompat? = findPreference("function")
-        function?.let {
+        val function: SwitchPreferenceCompat = findPreference("function")!!
+        function.let {
 
             //初始化，意外中止可能会导致 MMKV 更新不了字段，所以额外判断一下
             if (!TouchHelperService.isServiceRunning()) {
@@ -108,8 +108,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         /**
          * 广告检测时长设置
          */
-        val duration: SeekBarPreference? = findPreference("duration")
-        duration?.let {
+        val duration: SeekBarPreference = findPreference("duration")!!
+        duration.let {
 
             //初始化
             it.value = Settings.getAdDetectionDuration()
@@ -124,8 +124,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         /**
          * 关键字
          */
-        val keyword: EditTextPreference? = findPreference("keyword")
-        keyword?.let {
+        val keyword: EditTextPreference = findPreference("keyword")!!
+        keyword.let {
 
             //初始化
             it.text = Settings.getKeyWords().joinToString(" ")
@@ -142,8 +142,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         /**
          * 白名单
          */
-        val whiteList: Preference? = findPreference("whitelist")
-        whiteList?.setOnPreferenceClickListener {
+        val whiteList: Preference = findPreference("whitelist")!!
+        whiteList.setOnPreferenceClickListener {
             //限制只显示一个框
             it.isEnabled = false
             val progressDialog = ProgressDialog(requireContext())
@@ -164,8 +164,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         /**
          * 采集按钮
          */
-        val activityCustomization: Preference? = findPreference("setting_activity_customization")
-        activityCustomization?.setOnPreferenceClickListener {
+        val gatherButtons: Preference = findPreference("gather_buttons")!!
+        gatherButtons.setOnPreferenceClickListener {
             if (!TouchHelperService.dispatchAction(TouchHelperService.ACTION_ACTIVITY_CUSTOMIZATION)) {
                 Toast.makeText(
                     context, resources.getString(R.string.pls_bind_acc), Toast.LENGTH_SHORT
@@ -177,10 +177,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         /**
          *  管理已经采集按钮的应用
          */
-        activityWidgets = findPreference("setting_activity_widgets")!!
+        manageWidgets = findPreference("manage_widgets")!!
         mapPackageWidgets = Settings.getMapPackageWidgets()
-        updateMultiSelectListPreferenceEntries(activityWidgets, mapPackageWidgets.keys)
-        activityWidgets.setOnPreferenceChangeListener { _, newValue ->
+        Log.e("halo", "已采集控件信息: $mapPackageWidgets")
+        updateMultiSelectListPreferenceEntries(manageWidgets, mapPackageWidgets.keys)
+        manageWidgets.setOnPreferenceChangeListener { _, newValue ->
             val results = newValue as MutableSet<*>
             val keys: MutableSet<String> = mapPackageWidgets.keys.toMutableSet()
             for (key in keys) {
@@ -189,7 +190,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
             }
             Settings.setMapPackageWidgets(mapPackageWidgets)
-            updateMultiSelectListPreferenceEntries(activityWidgets, mapPackageWidgets.keys)
+            updateMultiSelectListPreferenceEntries(manageWidgets, mapPackageWidgets.keys)
             TouchHelperService.dispatchAction(TouchHelperService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY)
             true
         }
@@ -197,11 +198,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         /**
          * 管理已经采集位置的应用
          */
-        activityPositions = findPreference("setting_activity_positions")!!
+        managePositions = findPreference("manage_positions")!!
         mapPackagePositions = Settings.getMapPackagePositions()
-        Log.e("halo", "位置信息: $mapPackagePositions")
-        updateMultiSelectListPreferenceEntries(activityPositions, mapPackagePositions.keys)
-        activityPositions.setOnPreferenceChangeListener { _, newValue ->
+        Log.e("halo", "已采集位置信息: $mapPackagePositions")
+        updateMultiSelectListPreferenceEntries(managePositions, mapPackagePositions.keys)
+        managePositions.setOnPreferenceChangeListener { _, newValue ->
             val results = newValue as MutableSet<*>
             val keys: MutableSet<String> = mapPackagePositions.keys.toMutableSet()
             for (key in keys) {
@@ -210,18 +211,36 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
             }
             Settings.setMapPackagePositions(mapPackagePositions)
-            updateMultiSelectListPreferenceEntries(activityPositions, mapPackagePositions.keys)
+            updateMultiSelectListPreferenceEntries(managePositions, mapPackagePositions.keys)
             TouchHelperService.dispatchAction(TouchHelperService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY)
+            true
+        }
+
+        /**
+         * 管理规则
+         */
+        val manageRules: Preference = findPreference("manage_rules")!!
+        manageRules.setOnPreferenceClickListener {
+            val fragmentManager = requireActivity().supportFragmentManager
+            val newFragment = ManagePackageWidgetsDialogFragment()
+            newFragment.show(fragmentManager, "dialog")
             true
         }
 
     }
 
     /**
+     * 刷新规则数据
+     */
+    fun refresh() {
+        initPreferences()
+    }
+
+    /**
      * 更新偏好设置中某一个MultiSelectListPreference的内容
      */
     private fun updateMultiSelectListPreferenceEntries(
-        preference: MultiSelectListPreference, keys: Set<String>
+        preference: MultiSelectListPreference, keys: MutableSet<String>
     ) {
         val entries = keys.toTypedArray<CharSequence>()
         preference.entries = entries
@@ -284,7 +303,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         //app信息名单
         val appInfoList: MutableList<AppInfo> = ArrayList()
         //应用白名单包名集合
-        val pkgWhitelist: MutableSet<String> = Settings.getWhiteList()
+        val pkgWhitelist = Settings.getWhiteList()
         //遍历所有应用
         for (pkgName in appList) {
             val info = packageManager.getApplicationInfo(pkgName, PackageManager.GET_META_DATA)

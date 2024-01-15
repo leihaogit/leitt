@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="60dp"
+        android:gravity="center"
+        android:text="编辑按钮应用跳过的规则"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_tips" />
+
+    <EditText
+        android:id="@+id/et_rules"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@null"
+        android:gravity="start|top"
+        android:hint="请填写规则"
+        android:inputType="textMultiLine"
+        android:isScrollContainer="false"
+        android:maxLines="15"
+        android:minLines="10"
+        android:overScrollMode="ifContentScrolls"
+        android:scrollbarStyle="outsideInset"
+        android:scrollbars="vertical"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_rules" />
+
+    <Button
+        android:id="@+id/btn_copy"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:layout_marginTop="9dp"
+        android:background="@drawable/drawable_btn_bg"
+        android:text="复制规则"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/btn_clear"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+    <Button
+        android:id="@+id/btn_clear"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/drawable_btn_bg"
+        android:text="清空规则"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_copy"
+        app:layout_constraintEnd_toStartOf="@+id/btn_paste"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_copy"
+        app:layout_constraintTop_toTopOf="@+id/btn_copy" />
+
+    <Button
+        android:id="@+id/btn_paste"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/drawable_btn_bg"
+        android:text="粘贴规则"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_clear"
+        app:layout_constraintTop_toTopOf="@+id/btn_clear" />
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/drawable_btn_bg"
+        android:text="取消修改"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_online_rules"
+        app:layout_constraintEnd_toStartOf="@+id/btn_online_rules"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_online_rules" />
+
+    <Button
+        android:id="@+id/btn_online_rules"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/drawable_btn_bg"
+        android:text="获取规则"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_confirm"
+        app:layout_constraintEnd_toStartOf="@+id/btn_confirm"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_cancel"
+        app:layout_constraintTop_toTopOf="@+id/btn_confirm" />
+
+    <Button
+        android:id="@+id/btn_confirm"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/drawable_btn_bg"
+        android:text="确认修改"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_online_rules"
+        app:layout_constraintTop_toBottomOf="@+id/btn_paste" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

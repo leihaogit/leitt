@@ -1,7 +1,11 @@
 package com.hal.leitt.ktx
 
+import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.hal.leitt.App
 import com.hal.leitt.entity.PackagePositionDescription
 import com.hal.leitt.entity.PackageWidgetDescription
 import com.tencent.mmkv.MMKV
@@ -69,46 +73,68 @@ object Settings {
      * 获取检测应用白名单，默认空名单
      */
     fun getWhiteList(): MutableSet<String> {
-        return MMKV.defaultMMKV().decodeStringSet(Constant.WHITELIST, mutableSetOf())!!
+        //如果是第一次获取，生成一个默认的初始白名单，包含系统应用以及自身
+        val packageManager: PackageManager = App.appContext.packageManager
+        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+        val resolveInfoList = packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL)
+        val pkgSystems: MutableSet<String> = HashSet()
+        for (e in resolveInfoList) {
+            if (e.activityInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM) {
+                pkgSystems.add(e.activityInfo.packageName)
+            }
+        }
+        pkgSystems.add(App.appContext.packageName)
+        return MMKV.defaultMMKV().decodeStringSet(Constant.WHITELIST, pkgSystems)!!
     }
 
     /**
-     * 获取包控件信息映射
+     * 获取控件信息映射
      */
     fun getMapPackageWidgets(): MutableMap<String, MutableSet<PackageWidgetDescription>> {
         val jsonString = MMKV.defaultMMKV().decodeString(Constant.PACKAGE_WIDGETS, "{}")
-        val gson = Gson()
         val type =
             object : TypeToken<MutableMap<String, MutableSet<PackageWidgetDescription>>>() {}.type
-        return gson.fromJson(jsonString, type)
+        return Gson().fromJson(jsonString, type)
     }
 
     /**
-     * 保存包控件信息映射
+     * 保存控件信息映射
      */
     fun setMapPackageWidgets(mapPackageWidgets: MutableMap<String, MutableSet<PackageWidgetDescription>>) {
-        val gson = Gson()
-        val jsonString = gson.toJson(mapPackageWidgets)
+        val jsonString = Gson().toJson(mapPackageWidgets)
         MMKV.defaultMMKV().encode(Constant.PACKAGE_WIDGETS, jsonString)
     }
 
     /**
-     * 保存包位置信息映射
+     * 保存控件信息映射（自定义规则），解析并保存成功返回true，否则返回false
+     */
+    fun setMapPackageWidgetsInString(rules: String): Boolean {
+        return try {
+            val type = object :
+                TypeToken<MutableMap<String, MutableSet<PackageWidgetDescription>>>() {}.type
+            Gson().fromJson(rules, type) as MutableMap<String, MutableSet<PackageWidgetDescription>>
+            MMKV.defaultMMKV().encode(Constant.PACKAGE_WIDGETS, rules)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    /**
+     * 保存位置信息映射
      */
     fun setMapPackagePositions(mapPackagePositions: MutableMap<String, PackagePositionDescription>) {
-        val gson = Gson()
-        val jsonString = gson.toJson(mapPackagePositions)
+        val jsonString = Gson().toJson(mapPackagePositions)
         MMKV.defaultMMKV().encode(Constant.PACKAGE_POSITIONS, jsonString)
     }
 
     /**
-     * 获取包位置信息映射
+     * 获取位置信息映射
      */
     fun getMapPackagePositions(): MutableMap<String, PackagePositionDescription> {
         val jsonString = MMKV.defaultMMKV().decodeString(Constant.PACKAGE_POSITIONS, "{}")
-        val gson = Gson()
         val type = object : TypeToken<MutableMap<String, PackagePositionDescription>>() {}.type
-        return gson.fromJson(jsonString, type)
+        return Gson().fromJson(jsonString, type)
     }
 
 

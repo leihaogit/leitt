@@ -42,7 +42,7 @@
     <PreferenceCategory app:title="高级功能">
         <Preference
             app:icon="@drawable/baseline_architecture_24"
-            app:key="setting_activity_customization"
+            app:key="gather_buttons"
             app:summary="手动采集应用的跳过按钮"
             app:title="采集按钮" />
 
@@ -51,18 +51,25 @@
             app:entries="@array/empty_entries"
             app:entryValues="@array/empty_entries"
             app:icon="@drawable/baseline_format_list_bulleted_24"
-            app:key="setting_activity_widgets"
+            app:key="manage_widgets"
             app:summary="保留或者删除已采集跳过按钮的应用"
             app:title="管理已采集按钮的应用" />
 
+        <Preference
+            app:icon="@drawable/baseline_edit_24"
+            app:key="manage_rules"
+            app:summary="手动编辑规则"
+            app:title="导入/导入采集按钮的规则" />
+
         <MultiSelectListPreference
-            app:dialogTitle="勾选要保留的程序"
+            app:dialogTitle="勾选要保留的应用"
             app:entries="@array/empty_entries"
             app:entryValues="@array/empty_entries"
             app:icon="@drawable/baseline_my_location_24"
-            app:key="setting_activity_positions"
-            app:summary="保留或者删除已采集跳过区域的应用"
-            app:title="管理已采集区域的应用" />
+            app:key="manage_positions"
+            app:summary="保留或者删除已采集跳过位置的应用"
+            app:title="管理已采集位置的应用" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
