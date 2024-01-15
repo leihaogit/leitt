@@ -3,6 +3,8 @@ package com.hal.leitt.ui.fragment
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -61,7 +63,7 @@ class ManagePackageWidgetsDialogFragment : DialogFragment() {
                 Toast.makeText(requireContext(), "规则已保存", Toast.LENGTH_SHORT).show()
                 (requireActivity() as SettingsActivity).supportFragmentManager.fragments.forEach {
                     if (it is SettingsFragment) {
-                        it.refresh()
+                        it.initPreferences()
                     }
                 }
             } else {
@@ -77,6 +79,14 @@ class ManagePackageWidgetsDialogFragment : DialogFragment() {
         //清空
         binding.btnClear.setOnClickListener {
             binding.etRules.setText("{}")
+        }
+
+        //获取规则
+        binding.btnOnlineRules.setOnClickListener {
+            val url = "https://github.com/Snoopy1866/LiTiaotiao-Custom-Rules"
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            startActivity(intent)
         }
 
     }

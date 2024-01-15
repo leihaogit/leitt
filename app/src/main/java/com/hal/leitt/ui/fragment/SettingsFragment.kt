@@ -68,7 +68,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         initPreferences()
     }
 
-    private fun initPreferences() {
+    fun initPreferences() {
         /**
          * 基础功能开关
          */
@@ -227,13 +227,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
-    }
-
-    /**
-     * 刷新规则数据
-     */
-    fun refresh() {
-        initPreferences()
     }
 
     /**
