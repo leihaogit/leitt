@@ -15,6 +15,7 @@ import com.google.gson.Gson
 import com.hal.leitt.databinding.LayoutManagePackageWidgetsBinding
 import com.hal.leitt.ktx.Settings
 import com.hal.leitt.ktx.viewBinding
+import com.hal.leitt.service.TouchHelperService
 import com.hal.leitt.ui.SettingsActivity
 
 /**
@@ -66,6 +67,7 @@ class ManagePackageWidgetsDialogFragment : DialogFragment() {
                         it.initPreferences()
                     }
                 }
+                TouchHelperService.dispatchAction(TouchHelperService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY)
             } else {
                 Toast.makeText(requireContext(), "规则格式不正确", Toast.LENGTH_SHORT).show()
             }
