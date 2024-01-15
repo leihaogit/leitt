@@ -36,6 +36,7 @@ import com.hal.leitt.entity.PackagePositionDescription
 import com.hal.leitt.entity.PackageWidgetDescription
 import com.hal.leitt.ktx.Settings
 import com.hal.leitt.receiver.PackageChangeReceiver
+import com.hal.leitt.receiver.UserPresentReceiver
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.ScheduledExecutorService
@@ -86,6 +87,11 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
     //包变化广播接收器
     private val packageChangeReceiver by lazy {
         PackageChangeReceiver()
+    }
+
+    //屏幕变化广播接收器
+    private val userPresentReceiver by lazy {
+        UserPresentReceiver()
     }
 
     //包管理器
@@ -145,11 +151,15 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
     }
 
     private fun installReceiverAndHandler() {
-        val actions = IntentFilter()
-        actions.addAction(Intent.ACTION_PACKAGE_ADDED)
-        actions.addAction(Intent.ACTION_PACKAGE_REMOVED)
-        actions.addDataScheme("package")
-        service.registerReceiver(packageChangeReceiver, actions)
+        service.registerReceiver(userPresentReceiver, IntentFilter().apply {
+            addAction(Intent.ACTION_USER_PRESENT)
+        })
+        Log.e("halo", "屏幕变化广播已注册")
+        service.registerReceiver(packageChangeReceiver, IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REMOVED)
+            addDataScheme("package")
+        })
         Log.e("halo", "系统包变化广播已注册")
 
         // 处理广播事件
@@ -177,6 +187,10 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                 TouchHelperService.ACTION_ACTIVITY_CUSTOMIZATION -> {
                     Log.e("halo", "打开采集按钮弹窗")
                     showActivityCustomizationDialog()
+                }
+                //唤醒无障碍服务
+                TouchHelperService.ACTION_WAKE_UP -> {
+                    Log.e("halo", "~~~~~~~~~~服务被唤醒了~~~~~~~~~~")
                 }
             }
             true
@@ -820,6 +834,8 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
 
 
     fun onUnbind() {
+        service.unregisterReceiver(userPresentReceiver)
+        Log.e("halo", "屏幕变化广播已注册")
         service.unregisterReceiver(packageChangeReceiver)
         Log.e("halo", "系统包变化广播已注销")
         Log.e("halo", "==========无障碍服务已关闭==========")
