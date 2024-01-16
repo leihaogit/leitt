@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">雷跳跳</string>
-    <string name="service_name">❤️ 雷跳跳 ❤️</string>
+    <string name="service_name">[ 🐰 雷跳跳 🐰 ]</string>
     <string name="desc">\n🐰🐰🐰\n------------\n我的作用：自动帮您跳过开屏广告。\n------------\n用户须知：雷跳跳是一个单机应用，不会也不可能泄露您的任何隐私，请放心使用。\n------------\n\n\n🐟🦈🐟</string>
     <string name="home_desc">🐟 自动帮您跳过开屏广告。\n ---------- \n🐠 单机应用，不会泄露您的任何隐私。\n ---------- \n🐡 为保证程序正常工作，请检查以下设置：</string>
     <string name="share">分享</string>
@@ -14,5 +14,4 @@
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>
     <string name="loading_app_list">正在加载应用列表…</string>
-
 </resources>

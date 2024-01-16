@@ -607,9 +607,9 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
             val nodeDesc: String = describeAccessibilityNode(node)
             if (!clickedWidgets.contains(nodeDesc)) {
                 clickedWidgets.add(nodeDesc)
+                Log.e("halo", "~~~~~~~~~~~~~~~~~~~~通过关键字跳过了广告~~~~~~~~~~~~~~~~~~~~")
                 val clicked = node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                 if (!clicked) {
-                    Log.e("halo", "通过关键字跳过了广告")
                     val rect = Rect()
                     node.getBoundsInScreen(rect)
                     click(rect.centerX(), rect.centerY())
@@ -652,7 +652,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
                 val nodeDesc: String = describeAccessibilityNode(node)
                 if (!clickedWidgets.contains(nodeDesc)) {
                     clickedWidgets.add(nodeDesc)
-                    Log.e("halo", "通过控件信息跳过了广告")
+                    Log.e("halo", "~~~~~~~~~~~~~~~~~~~~通过指定控件跳过了广告~~~~~~~~~~~~~~~~~~~~")
                     if (e.onlyClick) {
                         click(temRect.centerX(), temRect.centerY())
                     } else {

@@ -29,8 +29,6 @@ import com.hal.leitt.service.TouchHelperService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.sourceforge.pinyin4j.PinyinHelper
-import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat
 
 /**
  * ...
@@ -275,21 +273,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         for (pkgName in appList) {
             val info = packageManager.getApplicationInfo(pkgName, PackageManager.GET_META_DATA)
             val applicationName = packageManager.getApplicationLabel(info).toString()
-            //中文 - 拼音
-            val applicationNamePinYin = try {
-                PinyinHelper.toHanYuPinyinString(
-                    applicationName, HanyuPinyinOutputFormat(), "", true
-                )
-            } catch (e: Exception) {
-                applicationName
-            }
             //默认不是白名单
             val appInfo = AppInfo(
-                pkgName,
-                applicationName,
-                applicationNamePinYin,
-                packageManager.getApplicationIcon(info),
-                false
+                pkgName, applicationName, packageManager.getApplicationIcon(info), false
             )
             //检查是否是白名单应用
             appInfo.isChecked = pkgWhitelist.contains(pkgName)

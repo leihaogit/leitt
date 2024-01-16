@@ -7,4 +7,4 @@
     android:canRetrieveWindowContent="true"
     android:description="@string/desc"
     android:notificationTimeout="50"
-    android:settingsActivity="com.hal.leitt.ui.HomeActivity" />
+    android:settingsActivity="com.hal.leitt.ui.SettingsActivity" />

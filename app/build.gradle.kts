@@ -19,10 +19,10 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -39,8 +39,6 @@ android {
 }
 
 dependencies {
-    //汉字拼音转换
-    implementation("com.belerweb:pinyin4j:2.5.1")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("androidx.activity:activity-ktx:1.7.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
