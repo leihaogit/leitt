@@ -2,7 +2,7 @@
     <string name="app_name">雷跳跳</string>
     <string name="service_name">[ 🐰 雷跳跳 🐰 ]</string>
     <string name="desc">\n🐰🐰🐰\n------------\n我的作用：自动帮您跳过开屏广告。\n------------\n用户须知：雷跳跳是一个单机应用，不会也不可能泄露您的任何隐私，请放心使用。\n------------\n\n\n🐟🦈🐟</string>
-    <string name="home_desc">🐟 自动帮您跳过开屏广告。\n ---------- \n🐠 单机应用，不会泄露您的任何隐私。\n ---------- \n🐡 为保证程序正常工作，请检查下方设置，如果设置后应用仍会被系统杀死，请点击链接查看方案解决。</string>
+    <string name="home_desc">🐟 自动帮您跳过开屏广告。\n ---------- \n🐠 单机应用，不会泄露您的任何隐私。\n ---------- \n🐡 为保证应用正常工作，请检查下方设置，如果设置完后仍会被系统杀死，请点击网址查看解决方案。</string>
     <string name="share">分享</string>
     <string name="acc_tips">1. 通过 \"无障碍/辅助功能 -> 已安装 -> 雷跳跳\" 启动无障碍服务。</string>
     <string name="power_tips">2. 在 \"电池优化\" 设置中，将 \"雷跳跳\" 设置为 \"不优化\" 。</string>
