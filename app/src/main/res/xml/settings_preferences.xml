@@ -44,7 +44,7 @@
             app:icon="@drawable/baseline_architecture_24"
             app:key="gather_buttons"
             app:summary="手动采集应用的跳过按钮"
-            app:title="采集按钮" />
+            app:title="采集控件" />
 
         <MultiSelectListPreference
             app:dialogTitle="勾选要保留的应用"

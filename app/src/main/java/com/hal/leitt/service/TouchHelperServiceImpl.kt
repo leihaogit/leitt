@@ -221,7 +221,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         customizationParams.flags =
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
         customizationParams.width = width
-        customizationParams.height = height / 5
+        customizationParams.height = WindowManager.LayoutParams.WRAP_CONTENT
         customizationParams.x = (metrics.widthPixels - customizationParams.width) / 2
         customizationParams.y = metrics.heightPixels - customizationParams.height
         customizationParams.alpha = 0.95f
