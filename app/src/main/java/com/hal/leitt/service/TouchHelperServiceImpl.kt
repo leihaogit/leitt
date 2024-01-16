@@ -403,13 +403,17 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
      * 查找所有的控件
      */
     private fun findAllNode(
-        roots: List<AccessibilityNodeInfo>, list: MutableList<AccessibilityNodeInfo>, indent: String
+        roots: List<AccessibilityNodeInfo?>,
+        list: MutableList<AccessibilityNodeInfo>,
+        indent: String
     ) {
-        val childrenList = java.util.ArrayList<AccessibilityNodeInfo>()
+        val childrenList = ArrayList<AccessibilityNodeInfo>()
         for (e in roots) {
-            list.add(e)
-            for (n in 0 until e.childCount) {
-                childrenList.add(e.getChild(n))
+            e?.let {
+                list.add(e)
+                for (n in 0 until e.childCount) {
+                    childrenList.add(e.getChild(n))
+                }
             }
         }
         if (childrenList.isNotEmpty()) {
@@ -540,9 +544,9 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
     private fun iterateNodesToSkipAd(
         root: AccessibilityNodeInfo, set: MutableSet<PackageWidgetDescription>?
     ) {
-        val topNodes = java.util.ArrayList<AccessibilityNodeInfo>()
+        val topNodes = ArrayList<AccessibilityNodeInfo>()
         topNodes.add(root)
-        val childNodes = java.util.ArrayList<AccessibilityNodeInfo>()
+        val childNodes = ArrayList<AccessibilityNodeInfo>()
         var total = topNodes.size
         var index = 0
         var node: AccessibilityNodeInfo

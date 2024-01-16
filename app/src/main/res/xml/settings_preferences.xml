@@ -59,7 +59,7 @@
             app:icon="@drawable/baseline_edit_24"
             app:key="manage_rules"
             app:summary="手动编辑规则"
-            app:title="导入/导入采集按钮的规则" />
+            app:title="导入/导出采集按钮的规则" />
 
     </PreferenceCategory>
 
