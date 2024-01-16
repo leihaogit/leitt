@@ -8,7 +8,7 @@
 ![下载地址](https://s11.ax1x.com/2024/01/16/pFFfixs.jpg)
 
 #### 软件截图
-![截图1](https://s11.ax1x.com/2024/01/16/pFFfuiF.jpg)
+<img src="https://s11.ax1x.com/2024/01/16/pFFfuiF.jpg" width="30%"/>
 ![截图2](https://s11.ax1x.com/2024/01/16/pFFfQz9.jpg)
 ![截图3](https://s11.ax1x.com/2024/01/16/pFFf3s1.jpg)
 
