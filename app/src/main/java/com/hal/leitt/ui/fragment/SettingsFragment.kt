@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hal.leitt.R
 import com.hal.leitt.adapter.AppInfoAdapter
 import com.hal.leitt.entity.AppInfo
-import com.hal.leitt.entity.PackagePositionDescription
 import com.hal.leitt.entity.PackageWidgetDescription
 import com.hal.leitt.ktx.Settings
 import com.hal.leitt.service.TouchHelperService
@@ -52,15 +51,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     }
 
-    private lateinit var managePositions: MultiSelectListPreference
     private lateinit var manageWidgets: MultiSelectListPreference
 
     //包名及对应控件信息映射
     private var mapPackageWidgets: MutableMap<String, MutableSet<PackageWidgetDescription>> =
         mutableMapOf()
-
-    //包名及对应位置信息映射
-    private var mapPackagePositions: MutableMap<String, PackagePositionDescription> = mutableMapOf()
 
     override fun onResume() {
         super.onResume()
@@ -191,27 +186,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
             Settings.setMapPackageWidgets(mapPackageWidgets)
             updateMultiSelectListPreferenceEntries(manageWidgets, mapPackageWidgets.keys)
-            TouchHelperService.dispatchAction(TouchHelperService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY)
-            true
-        }
-
-        /**
-         * 管理已经采集位置的应用
-         */
-        managePositions = findPreference("manage_positions")!!
-        mapPackagePositions = Settings.getMapPackagePositions()
-        Log.e("halo", "已采集位置信息: $mapPackagePositions")
-        updateMultiSelectListPreferenceEntries(managePositions, mapPackagePositions.keys)
-        managePositions.setOnPreferenceChangeListener { _, newValue ->
-            val results = newValue as MutableSet<*>
-            val keys: MutableSet<String> = mapPackagePositions.keys.toMutableSet()
-            for (key in keys) {
-                if (!results.contains(key)) {
-                    mapPackagePositions.remove(key)
-                }
-            }
-            Settings.setMapPackagePositions(mapPackagePositions)
-            updateMultiSelectListPreferenceEntries(managePositions, mapPackagePositions.keys)
             TouchHelperService.dispatchAction(TouchHelperService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY)
             true
         }

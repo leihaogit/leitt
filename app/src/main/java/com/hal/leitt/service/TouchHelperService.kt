@@ -17,20 +17,17 @@ import java.lang.ref.WeakReference
 class TouchHelperService : AccessibilityService() {
 
     companion object {
-        //关键字刷新
+        //刷新关键字
         const val ACTION_REFRESH_KEYWORDS = 1
 
-        //包列表刷新
+        //刷新检测包列表
         const val ACTION_REFRESH_PACKAGE = 2
 
-        //自定义按钮采集弹窗
+        //弹出自定义按钮采集弹窗
         const val ACTION_ACTIVITY_CUSTOMIZATION = 3
 
         //刷新采集到的控件或者位置信息
         const val ACTION_REFRESH_CUSTOMIZED_ACTIVITY = 4
-
-        //唤醒无障碍服务
-        const val ACTION_WAKE_UP = 5
 
         private var mService: WeakReference<TouchHelperService>? = null
 

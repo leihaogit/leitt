@@ -93,5 +93,4 @@ class ManagePackageWidgetsDialogFragment : DialogFragment() {
 
     }
 
-
 }

@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.Menu
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -127,14 +126,7 @@ class HomeActivity : AppCompatActivity() {
         item.setOnMenuItemClickListener {
             item.isEnabled = false
             Handler(mainLooper).postDelayed({ item.isEnabled = true }, 500)
-            //TODO 先设置一定能进
-            if (binding.ivAccStatus.isSelected || true) {
-                SettingsActivity.start(this)
-            } else {
-                Toast.makeText(
-                    context, resources.getString(R.string.pls_bind_acc), Toast.LENGTH_SHORT
-                ).show()
-            }
+            SettingsActivity.start(this)
             true
         }
         return true

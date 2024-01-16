@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.hal.leitt.App
-import com.hal.leitt.entity.PackagePositionDescription
 import com.hal.leitt.entity.PackageWidgetDescription
 import com.tencent.mmkv.MMKV
 
@@ -119,23 +118,4 @@ object Settings {
             false
         }
     }
-
-    /**
-     * 保存位置信息映射
-     */
-    fun setMapPackagePositions(mapPackagePositions: MutableMap<String, PackagePositionDescription>) {
-        val jsonString = Gson().toJson(mapPackagePositions)
-        MMKV.defaultMMKV().encode(Constant.PACKAGE_POSITIONS, jsonString)
-    }
-
-    /**
-     * 获取位置信息映射
-     */
-    fun getMapPackagePositions(): MutableMap<String, PackagePositionDescription> {
-        val jsonString = MMKV.defaultMMKV().decodeString(Constant.PACKAGE_POSITIONS, "{}")
-        val type = object : TypeToken<MutableMap<String, PackagePositionDescription>>() {}.type
-        return Gson().fromJson(jsonString, type)
-    }
-
-
 }

@@ -23,8 +23,4 @@ object Constant {
 
     //包名及对应控件信息
     const val PACKAGE_WIDGETS = "PACKAGE_WIDGETS"
-
-    //包名及对应位置信息
-    const val PACKAGE_POSITIONS = "PACKAGE_POSITIONS"
-
 }
