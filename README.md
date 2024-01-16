@@ -10,7 +10,7 @@
 #### 软件截图
 <img src="https://s11.ax1x.com/2024/01/16/pFFfuiF.jpg" width="30%"/>
 <img src="https://s11.ax1x.com/2024/01/16/pFFfQz9.jpg" width="30%"/>
-<img src="https://s11.ax1x.com/2024/01/16/pFFf3s1.jpgg" width="30%"/>
+<img src="https://s11.ax1x.com/2024/01/16/pFFf3s1.jpg" width="30%"/>
 
 #### 使用教程
 
