@@ -5,7 +5,7 @@
 
 #### 安装教程
 
-![下载地址](https://s11.ax1x.com/2024/01/16/pFFfixs.jpg)
+![下载地址](https://i.postimg.cc/5yHL9KBw/leitt.png)
 
 #### 软件截图
 <img src="https://s11.ax1x.com/2024/01/16/pFFfuiF.jpg" width="30%"/>
