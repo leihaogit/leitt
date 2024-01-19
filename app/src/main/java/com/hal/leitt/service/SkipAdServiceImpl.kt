@@ -33,7 +33,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.hal.leitt.R
 import com.hal.leitt.entity.PackageWidgetDescription
-import com.hal.leitt.ktx.Settings
+import com.hal.leitt.ktx.PreferenceSettings
 import com.hal.leitt.receiver.PackageChangeReceiver
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -46,7 +46,7 @@ import kotlin.math.roundToInt
  * @description 自动触控服务具体实现
  */
 
-class TouchHelperServiceImpl(private val service: AccessibilityService) {
+class SkipAdServiceImpl(private val service: AccessibilityService) {
 
     //处理广播信息的Handler
     var receiverHandler: Handler? = null
@@ -105,14 +105,14 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         Log.e("halo", "==========无障碍服务已启动==========")
 
         //初始化白名单列表
-        whiteList = Settings.getWhiteList()
+        whiteList = PreferenceSettings.getWhiteList()
         updatePackage()
 
         //初始化关键字列表
-        keyWordList = Settings.getKeyWords()
+        keyWordList = PreferenceSettings.getKeyWords()
 
         //初始化包及控件信息映射
-        mapPackageWidgets = Settings.getMapPackageWidgets()
+        mapPackageWidgets = PreferenceSettings.getMapPackageWidgets()
 
         // 初始化接收器
         installReceiverAndHandler()
@@ -134,23 +134,23 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
         receiverHandler = Handler(Looper.getMainLooper()) { msg: Message ->
             when (msg.what) {
                 //关键字更新
-                TouchHelperService.ACTION_REFRESH_KEYWORDS -> {
+                SkipAdService.ACTION_REFRESH_KEYWORDS -> {
                     Log.e("halo", "关键字刷新: $keyWordList")
-                    keyWordList = Settings.getKeyWords()
+                    keyWordList = PreferenceSettings.getKeyWords()
                 }
                 //包状态更新
-                TouchHelperService.ACTION_REFRESH_PACKAGE -> {
+                SkipAdService.ACTION_REFRESH_PACKAGE -> {
                     Log.e("halo", "白名单刷新: $whiteList")
-                    whiteList = Settings.getWhiteList()
+                    whiteList = PreferenceSettings.getWhiteList()
                     updatePackage()
                 }
 
-                TouchHelperService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY -> {
+                SkipAdService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY -> {
                     Log.e("halo", "控件信息刷新: $mapPackageWidgets")
-                    mapPackageWidgets = Settings.getMapPackageWidgets()
+                    mapPackageWidgets = PreferenceSettings.getMapPackageWidgets()
                 }
                 //打开采集按钮弹窗
-                TouchHelperService.ACTION_ACTIVITY_CUSTOMIZATION -> {
+                SkipAdService.ACTION_ACTIVITY_CUSTOMIZATION -> {
                     Log.e("halo", "打开采集按钮弹窗")
                     showActivityCustomizationDialog()
                 }
@@ -356,7 +356,7 @@ class TouchHelperServiceImpl(private val service: AccessibilityService) {
             }
             btAddWidget.isEnabled = false
             tvPackageName.text = widgetDescription.packageName + " (控件数据已保存)"
-            Settings.setMapPackageWidgets(mapPackageWidgets)
+            PreferenceSettings.setMapPackageWidgets(mapPackageWidgets)
         }
 
         btQuit.setOnClickListener {

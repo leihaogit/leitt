@@ -24,8 +24,8 @@ import com.hal.leitt.R
 import com.hal.leitt.adapter.AppInfoAdapter
 import com.hal.leitt.entity.AppInfo
 import com.hal.leitt.entity.PackageWidgetDescription
-import com.hal.leitt.ktx.Settings
-import com.hal.leitt.service.TouchHelperService
+import com.hal.leitt.ktx.PreferenceSettings
+import com.hal.leitt.service.SkipAdService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -37,7 +37,7 @@ import kotlinx.coroutines.withContext
  * @description 偏好设置页面
  */
 
-class SettingsFragment : PreferenceFragmentCompat() {
+class PreferenceSettingsFragment : PreferenceFragmentCompat() {
 
     private lateinit var packageManager: PackageManager
     private lateinit var inflater: LayoutInflater
@@ -69,15 +69,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
         function.let {
 
             //初始化，意外中止可能会导致 MMKV 更新不了字段，所以额外判断一下
-            if (!TouchHelperService.isServiceRunning()) {
+            if (!SkipAdService.isServiceRunning()) {
                 it.isChecked = false
-            } else it.isChecked = Settings.isFunctionOn()
+            } else it.isChecked = PreferenceSettings.isFunctionOn()
 
             it.setOnPreferenceChangeListener { _, newValue ->
                 val isChecked = newValue as Boolean
                 if (isChecked) {
                     //服务未开启不允许开启基础功能
-                    if (!TouchHelperService.isServiceRunning()) {
+                    if (!SkipAdService.isServiceRunning()) {
                         Toast.makeText(
                             requireContext(),
                             resources.getString(R.string.pls_bind_acc),
@@ -87,11 +87,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         return@setOnPreferenceChangeListener false
                     } else {
                         // 开关被打开
-                        Settings.setFunctionOn(true)
+                        PreferenceSettings.setFunctionOn(true)
                     }
                 } else {
                     // 开关被关闭
-                    Settings.setFunctionOn(false)
+                    PreferenceSettings.setFunctionOn(false)
                 }
                 true
             }
@@ -105,10 +105,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         duration.let {
 
             //初始化
-            it.value = Settings.getAdDetectionDuration()
+            it.value = PreferenceSettings.getAdDetectionDuration()
 
             it.setOnPreferenceChangeListener { _, newValue ->
-                Settings.setAdDetectionDuration(newValue as Int)
+                PreferenceSettings.setAdDetectionDuration(newValue as Int)
                 true
             }
 
@@ -121,12 +121,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
         keyword.let {
 
             //初始化
-            it.text = Settings.getKeyWords().joinToString(" ")
+            it.text = PreferenceSettings.getKeyWords().joinToString(" ")
 
             it.setOnPreferenceChangeListener { _, newValue ->
-                Settings.setKeyWords((newValue as String).trim())
+                PreferenceSettings.setKeyWords((newValue as String).trim())
                 // 刷新关键字列表
-                TouchHelperService.dispatchAction(TouchHelperService.ACTION_REFRESH_KEYWORDS)
+                SkipAdService.dispatchAction(SkipAdService.ACTION_REFRESH_KEYWORDS)
                 true
             }
 
@@ -159,7 +159,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
          */
         val gatherButtons: Preference = findPreference("gather_buttons")!!
         gatherButtons.setOnPreferenceClickListener {
-            if (!TouchHelperService.dispatchAction(TouchHelperService.ACTION_ACTIVITY_CUSTOMIZATION)) {
+            if (!SkipAdService.dispatchAction(SkipAdService.ACTION_ACTIVITY_CUSTOMIZATION)) {
                 Toast.makeText(
                     context, resources.getString(R.string.pls_bind_acc), Toast.LENGTH_SHORT
                 ).show()
@@ -171,7 +171,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
          *  管理已经采集按钮的应用
          */
         manageWidgets = findPreference("manage_widgets")!!
-        mapPackageWidgets = Settings.getMapPackageWidgets()
+        mapPackageWidgets = PreferenceSettings.getMapPackageWidgets()
         Log.e("halo", "已采集控件信息: $mapPackageWidgets")
         updateMultiSelectListPreferenceEntries(manageWidgets, mapPackageWidgets.keys)
         manageWidgets.setOnPreferenceChangeListener { _, newValue ->
@@ -182,9 +182,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     mapPackageWidgets.remove(key)
                 }
             }
-            Settings.setMapPackageWidgets(mapPackageWidgets)
+            PreferenceSettings.setMapPackageWidgets(mapPackageWidgets)
             updateMultiSelectListPreferenceEntries(manageWidgets, mapPackageWidgets.keys)
-            TouchHelperService.dispatchAction(TouchHelperService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY)
+            SkipAdService.dispatchAction(SkipAdService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY)
             true
         }
 
@@ -245,10 +245,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     pkgWhitelistNew.add(app.packageName)
                 }
             }
-            Settings.setWhiteList(pkgWhitelistNew)
+            PreferenceSettings.setWhiteList(pkgWhitelistNew)
 
             // 刷新包信息
-            TouchHelperService.dispatchAction(TouchHelperService.ACTION_REFRESH_PACKAGE)
+            SkipAdService.dispatchAction(SkipAdService.ACTION_REFRESH_PACKAGE)
 
             dialog.dismiss()
         }
@@ -268,7 +268,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         //app信息名单
         val appInfoList: MutableList<AppInfo> = ArrayList()
         //应用白名单包名集合
-        val pkgWhitelist = Settings.getWhiteList()
+        val pkgWhitelist = PreferenceSettings.getWhiteList()
         //遍历所有应用
         for (pkgName in appList) {
             val info = packageManager.getApplicationInfo(pkgName, PackageManager.GET_META_DATA)

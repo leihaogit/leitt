@@ -21,11 +21,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LeiTT">
         <activity
-            android:name=".ui.SettingsActivity"
+            android:name=".ui.PreferenceSettingsActivity"
             android:exported="false" />
 
         <service
-            android:name=".service.TouchHelperService"
+            android:name=".service.SkipAdService"
             android:enabled="true"
             android:exported="true"
             android:label="@string/service_name"

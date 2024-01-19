@@ -13,10 +13,10 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.google.gson.Gson
 import com.hal.leitt.databinding.LayoutManagePackageWidgetsBinding
-import com.hal.leitt.ktx.Settings
+import com.hal.leitt.ktx.PreferenceSettings
 import com.hal.leitt.ktx.viewBinding
-import com.hal.leitt.service.TouchHelperService
-import com.hal.leitt.ui.SettingsActivity
+import com.hal.leitt.service.SkipAdService
+import com.hal.leitt.ui.PreferenceSettingsActivity
 
 /**
  * ...
@@ -37,7 +37,7 @@ class ManagePackageWidgetsDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.etRules.setText(Gson().toJson(Settings.getMapPackageWidgets()))
+        binding.etRules.setText(Gson().toJson(PreferenceSettings.getMapPackageWidgets()))
         //复制
         binding.btnCopy.setOnClickListener {
             val clipboard =
@@ -59,15 +59,15 @@ class ManagePackageWidgetsDialogFragment : DialogFragment() {
 
         //保存
         binding.btnConfirm.setOnClickListener {
-            if (Settings.setMapPackageWidgetsInString(binding.etRules.text.toString())) {
+            if (PreferenceSettings.setMapPackageWidgetsInString(binding.etRules.text.toString())) {
                 dismiss()
                 Toast.makeText(requireContext(), "规则已保存", Toast.LENGTH_SHORT).show()
-                (requireActivity() as SettingsActivity).supportFragmentManager.fragments.forEach {
-                    if (it is SettingsFragment) {
+                (requireActivity() as PreferenceSettingsActivity).supportFragmentManager.fragments.forEach {
+                    if (it is PreferenceSettingsFragment) {
                         it.initPreferences()
                     }
                 }
-                TouchHelperService.dispatchAction(TouchHelperService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY)
+                SkipAdService.dispatchAction(SkipAdService.ACTION_REFRESH_CUSTOMIZED_ACTIVITY)
             } else {
                 Toast.makeText(requireContext(), "规则格式不正确", Toast.LENGTH_SHORT).show()
             }

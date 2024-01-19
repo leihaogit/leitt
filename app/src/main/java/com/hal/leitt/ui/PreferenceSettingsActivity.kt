@@ -10,9 +10,9 @@ import android.os.StrictMode
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import com.hal.leitt.R
-import com.hal.leitt.databinding.ActivitySettingsBinding
+import com.hal.leitt.databinding.ActivityPreferenceSettingsBinding
 import com.hal.leitt.ktx.viewBinding
-import com.hal.leitt.ui.fragment.SettingsFragment
+import com.hal.leitt.ui.fragment.PreferenceSettingsFragment
 import java.io.File
 
 /**
@@ -22,15 +22,15 @@ import java.io.File
  * @description 设置页
  */
 
-class SettingsActivity : AppCompatActivity() {
+class PreferenceSettingsActivity : AppCompatActivity() {
 
-    private val binding: ActivitySettingsBinding by viewBinding()
+    private val binding: ActivityPreferenceSettingsBinding by viewBinding()
 
     private lateinit var context: Context
 
     companion object {
         fun start(activity: Activity) {
-            val intent = Intent(activity, SettingsActivity::class.java)
+            val intent = Intent(activity, PreferenceSettingsActivity::class.java)
             activity.startActivity(intent)
         }
     }
@@ -52,7 +52,8 @@ class SettingsActivity : AppCompatActivity() {
         StrictMode.setVmPolicy(builder.build())
         builder.detectFileUriExposure()
         //放置 Fragment
-        supportFragmentManager.beginTransaction().replace(R.id.frameLayout, SettingsFragment())
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frameLayout, PreferenceSettingsFragment())
             .commit()
     }
 

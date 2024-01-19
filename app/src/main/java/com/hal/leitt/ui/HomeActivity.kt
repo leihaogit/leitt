@@ -14,7 +14,7 @@ import androidx.core.view.isVisible
 import com.hal.leitt.R
 import com.hal.leitt.databinding.ActivityHomeBinding
 import com.hal.leitt.ktx.viewBinding
-import com.hal.leitt.service.TouchHelperService
+import com.hal.leitt.service.SkipAdService
 import com.hal.leitt.viewmodel.HomeViewModel
 
 /**
@@ -113,20 +113,22 @@ class HomeActivity : AppCompatActivity() {
      * 检查服务状态
      */
     private fun checkServiceStatus() {
-        homeViewModel.mAccessibilityPermission.value = TouchHelperService.isServiceRunning()
+        homeViewModel.mAccessibilityPermission.value = SkipAdService.isServiceRunning()
         val pm = context.getSystemService(POWER_SERVICE) as PowerManager
         homeViewModel.mPowerOptimization.value =
             pm.isIgnoringBatteryOptimizations(context.packageName)
     }
 
-    //处理actionBar菜单栏
+    /**
+     * 处理actionBar菜单栏
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.home_menu, menu)
         val item = menu.findItem(R.id.app_bar_setting)
         item.setOnMenuItemClickListener {
             item.isEnabled = false
             Handler(mainLooper).postDelayed({ item.isEnabled = true }, 500)
-            SettingsActivity.start(this)
+            PreferenceSettingsActivity.start(this)
             true
         }
         return true

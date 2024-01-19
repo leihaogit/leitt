@@ -16,7 +16,7 @@ import com.tencent.mmkv.MMKV
  * @description 用于封装本地配置的保存和读取
  */
 
-object Settings {
+object PreferenceSettings {
 
     /**
      * 获取关键字列表，默认"跳过"
