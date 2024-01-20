@@ -1,5 +1,4 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="功能开关">
 
@@ -13,16 +12,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="基础设置">
-
-        <SeekBarPreference
-            android:max="10"
-            app:defaultValue="4"
-            app:icon="@drawable/baseline_access_time_24"
-            app:key="duration"
-            app:min="1"
-            app:showSeekBarValue="true"
-            app:summary="目标应用启动后的检测时间，设置过短广告可能未加载完，导致跳过失败"
-            app:title="检测时长 (推荐值：4秒)" />
 
         <EditTextPreference
             app:dialogTitle="多个关键字请以空格分隔"

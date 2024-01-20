@@ -12,9 +12,6 @@ object Constant {
     //基础跳广告功能是否开启
     const val IS_FUNCTION_ON = "IS_FUNCTION_ON"
 
-    //广告检测时长
-    const val AD_DETECTION_DURATION = "AD_DETECTION_DURATION"
-
     //关键字
     const val KEYWORD = "KEYWORD"
 

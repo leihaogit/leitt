@@ -16,7 +16,6 @@ import androidx.preference.EditTextPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -93,22 +92,6 @@ class PreferenceSettingsFragment : PreferenceFragmentCompat() {
                     // 开关被关闭
                     PreferenceSettings.setFunctionOn(false)
                 }
-                true
-            }
-
-        }
-
-        /**
-         * 广告检测时长设置
-         */
-        val duration: SeekBarPreference = findPreference("duration")!!
-        duration.let {
-
-            //初始化
-            it.value = PreferenceSettings.getAdDetectionDuration()
-
-            it.setOnPreferenceChangeListener { _, newValue ->
-                PreferenceSettings.setAdDetectionDuration(newValue as Int)
                 true
             }
 

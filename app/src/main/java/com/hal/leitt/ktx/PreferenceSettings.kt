@@ -48,20 +48,6 @@ object PreferenceSettings {
     }
 
     /**
-     * 获取广告检测时长，默认4s
-     */
-    fun getAdDetectionDuration(): Int {
-        return MMKV.defaultMMKV().decodeInt(Constant.AD_DETECTION_DURATION, 4)
-    }
-
-    /**
-     * 设置广告检测时长
-     */
-    fun setAdDetectionDuration(duration: Int) {
-        MMKV.defaultMMKV().encode(Constant.AD_DETECTION_DURATION, duration)
-    }
-
-    /**
      * 设置检测应用白名单
      */
     fun setWhiteList(list: MutableSet<String>) {
