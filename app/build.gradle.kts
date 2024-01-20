@@ -10,8 +10,8 @@ android {
         applicationId = "com.hal.leitt"
         minSdk = 24
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 101
+        versionName = "1.0.1"
         ndk {
             abiFilters.add("armeabi-v7a")
         }
