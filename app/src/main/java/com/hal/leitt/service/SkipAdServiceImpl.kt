@@ -117,6 +117,26 @@ class SkipAdServiceImpl(private val service: AccessibilityService) {
         // 初始化接收器
         installReceiverAndHandler()
 
+        //显示1像素的透明无障碍弹窗以保活
+        show1pxDialog()
+
+    }
+
+    /**
+     * 1像素的无障碍保活弹窗
+     */
+    private fun show1pxDialog() {
+        val windowManager =
+            service.getSystemService(AccessibilityService.WINDOW_SERVICE) as WindowManager
+        val view: View = LayoutInflater.from(service).inflate(R.layout.layout_1px_dialog, null)
+        val params = WindowManager.LayoutParams()
+        params.alpha = 0f
+        params.width = 1
+        params.height = 1
+        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+        params.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
+        params.gravity = Gravity.START or Gravity.BOTTOM
+        windowManager.addView(view, params)
     }
 
     private fun installReceiverAndHandler() {
