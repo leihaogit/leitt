@@ -5,7 +5,7 @@
 
 #### 安装
 
-![下载地址](https://i.postimg.cc/5yHL9KBw/leitt.png)
+![下载地址](https://www.pgyer.com/app/qrcode/leitt)
 
 #### 截图
 <img src="https://s11.ax1x.com/2024/01/16/pFFfuiF.jpg" width="30%"/><img src="https://s11.ax1x.com/2024/01/16/pFFfQz9.jpg" width="30%"/><img src="https://s11.ax1x.com/2024/01/16/pFFf3s1.jpg" width="30%"/>
