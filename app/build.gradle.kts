@@ -10,10 +10,11 @@ android {
         applicationId = "com.hal.leitt"
         minSdk = 24
         targetSdk = 33
-        versionCode = 101
-        versionName = "1.0.1"
+        versionCode = 102
+        versionName = "1.0.2"
+        setProperty("archivesBaseName", "LeiTT-v${versionName}")
         ndk {
-            abiFilters.add("armeabi-v7a")
+            abiFilters.addAll(arrayOf("armeabi-v7a", "arm64-v8a"))
         }
     }
     buildTypes {
