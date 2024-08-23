@@ -12,4 +12,4 @@
 
 #### 使用
 
-[使用教程](https://www.leihao168.top/2024/01/16/leitt/)
+[使用教程](https://www.leihao168.top/)
