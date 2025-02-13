@@ -16,7 +16,6 @@ Tips：工作比较忙没时间再维护项目了哈，这个项目是当时刚�
 
 [使用教程](https://www.leihao168.top/)
 
-#### Star
+#### Star History
 
-## Stargazers over time
-[![Stargazers over time](https://starchart.cc/leihaogit/leitt.svg?variant=adaptive)](https://starchart.cc/leihaogit/leitt)
+[![Star History Chart](https://api.star-history.com/svg?repos=leihaogit/leitt&type=Date)](https://star-history.com/#leihaogit/leitt&Date)
