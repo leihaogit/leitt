@@ -15,3 +15,8 @@ Tips：工作比较忙没时间再维护项目了哈，这个项目是当时刚�
 #### 使用
 
 [使用教程](https://www.leihao168.top/)
+
+#### Star
+
+## Stargazers over time
+[![Stargazers over time](https://starchart.cc/leihaogit/leitt.svg?variant=adaptive)](https://starchart.cc/leihaogit/leitt)
